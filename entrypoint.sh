@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ -z "${INPUT_PUSH_TOKEN}" ]]; then
+  # Default to the GITHUB_TOKEN secret if INPUT_PUSH_TOKEN is not provided
+  INPUT_PUSH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+fi
+
 echo
 echo "  'Nightly Merge Action' is using the following input:"
 echo "    - stable_branch = '$INPUT_STABLE_BRANCH'"
@@ -24,11 +29,6 @@ if [[ $INPUT_ALLOW_FORKS != "true" ]]; then
     echo "Nightly merge action is disabled for forks (use the 'allow_forks' option to enable it)."
     exit 0
   fi
-fi
-
-if [[ -z "${!INPUT_PUSH_TOKEN}" ]]; then
-  echo "Set the ${INPUT_PUSH_TOKEN} env variable."
-  exit 1
 fi
 
 FF_MODE="--no-ff"
